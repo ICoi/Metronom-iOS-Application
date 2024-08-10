@@ -1,0 +1,47 @@
+# Xcode
+*.xcworkspace
+*.xcuserdata
+*.xcuserstate
+*.xcscheme
+*.xcschememanagement.plist
+*.xcuserdatad
+*.moved-aside
+*.swp
+
+# Build results
+build/
+DerivedData/
+*.dSYM
+*.ipa
+*.app
+*.xcuserstate
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/
+
+# Swift Package Manager
+.swiftpm/
+.build/
+
+# Other
+*.DS_Store
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# macOS
+*.DS_Store
+*.AppleDouble
+*.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# tuist
+*.xcodeproj
