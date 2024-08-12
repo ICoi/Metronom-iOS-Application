@@ -11,7 +11,10 @@ import SwiftUI
 struct MetronomApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            
+            NavigationView {
+                MainView()
+            }
         }
     }
 }
