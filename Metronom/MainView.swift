@@ -10,7 +10,7 @@ import RxSwift
 
 struct MainView: View {
     let beef = BeefGenerator()
-    let timer = BPMTimer(bpm: 100)
+    let timer: BPMTimer = BPMTimer()
     let recorder = AudioRecorder()
     let disposeBag: DisposeBag = DisposeBag()
     
@@ -52,12 +52,19 @@ struct MainView: View {
             // 왼쪽 버튼
            Button(action: {
                print("Left Button Pressed")
-               timer.start()
-               timer.observe().subscribe(onNext: { _ in
-                   beef.play()
-               }).disposed(by: disposeBag)
+               
+               if isPlaying == false {
+                   self.timer.stop()
+                   self.timer.start(bpm: speed)
+                   self.timer.observe().subscribe(onNext: { _ in
+                       beef.play()
+                   }).disposed(by: disposeBag)
+               } else {
+                   self.timer.stop()
+               }
+               isPlaying.toggle()
            }) {
-               Text("시작! 재생!")
+               Text(isPlaying ? "시작" : "중단")
                    .frame(maxWidth: .infinity)
                    .padding()
                    .background(Color.blue)

@@ -9,15 +9,48 @@ import SwiftUI
 
 struct AudioPlayerView: View {
     let item: String
-    
+
+    @StateObject private var audioPlayer = AudioPlayer()
+    @State private var isPlaying = false
+
     var body: some View {
         VStack {
-            Text("선택한 항목: \(item)")
-                .font(.largeTitle)
+            Text("Audio Player")
+                .font(.title)
                 .padding()
-            
-            // 상세 정보나 추가 UI 요소를 여기에 배치
+
+            HStack {
+                Button(action: {
+                    if isPlaying {
+                        audioPlayer.pause()
+                    } else {
+                        audioPlayer.play()
+                    }
+                    isPlaying.toggle()
+                }) {
+                    Text(isPlaying ? "Pause" : "Play")
+                        .padding()
+                        .background(isPlaying ? Color.red : Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                }
+
+                Button(action: {
+                    audioPlayer.stop()
+                    isPlaying = false
+                }) {
+                    Text("Stop")
+                        .padding()
+                        .background(Color.gray)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                }
+            }
+            .padding()
         }
-        .navigationTitle("상세 화면") // 네비게이션 바의 제목
+        .onAppear {
+            let components = item.components(separatedBy: ".")
+            audioPlayer.loadAudio(fileName: components[0], fileType: components[1]) // Replace with your audio file name and type
+        }
     }
 }

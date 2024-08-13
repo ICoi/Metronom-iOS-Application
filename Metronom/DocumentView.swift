@@ -38,6 +38,13 @@ struct DocumentView: View {
             }
         }
         .navigationTitle("목록 화면") // 네비게이션 바의 제목
+        .onAppear(perform: {
+            print("화면 보여진다네!")
+            let dm = DocumentManager()
+            viewModel.items = dm.listFiles().map {
+                Item(id: UUID(), name: $0)
+            }
+        })
     }
     
     func updateDocumentList() {

@@ -18,7 +18,7 @@ class AudioRecorder: NSObject {
     private let mixerNode = AVAudioMixerNode()
     private let inputNode: AVAudioInputNode
     private var audioFile: AVAudioFile?
-
+    
     override init() {
         self.inputNode = audioEngine.inputNode
         
@@ -27,7 +27,7 @@ class AudioRecorder: NSObject {
         setupAudioSession()
         setupAudioEngine()
     }
-
+    
     private func setupAudioSession() {
         do {
             let audioSession = AVAudioSession.sharedInstance()
@@ -37,7 +37,7 @@ class AudioRecorder: NSObject {
             print("Failed to set up audio session: \(error.localizedDescription)")
         }
     }
-
+    
     private func setupAudioEngine() {
         // Attach nodes
         audioEngine.attach(playerNode)
@@ -59,7 +59,9 @@ class AudioRecorder: NSObject {
     func startRecording() {
         
         let fileName = UUID().uuidString + ".m4a"
-        let fileURL = getDocumentsDirectory().appendingPathComponent(fileName)
+        guard let fileURL = DocumentManager().getPath?.appendingPathComponent(fileName) else {
+            return
+        }
         let format = audioEngine.outputNode.outputFormat(forBus: 0)
         do {
             audioFile = try AVAudioFile(forWriting: fileURL, settings: format.settings)
@@ -84,35 +86,30 @@ class AudioRecorder: NSObject {
         let amplitude = 0.1
         let sampleCount = Int(sampleRate * duration)
         let sampleBuffer = AVAudioPCMBuffer(pcmFormat: audioEngine.mainMixerNode.outputFormat(forBus: 0), frameCapacity: AVAudioFrameCount(sampleCount))
-
+        
         sampleBuffer?.frameLength = AVAudioFrameCount(sampleCount)
         let samples = sampleBuffer?.floatChannelData?[0]
-
+        
         let thetaIncrement = 2.0 * Double.pi * frequency / sampleRate
         var theta = 0.0
-
+        
         for i in 0..<sampleCount {
             samples?[i] = Float(amplitude * sin(theta))
             theta += thetaIncrement
         }
-
+        
         playerNode.scheduleBuffer(sampleBuffer!, at: nil, options: .interrupts, completionHandler: nil)
         playerNode.play()
     }
-
+    
     func stopRecording() {
         audioEngine.mainMixerNode.removeTap(onBus: 0)
         playerNode.stop()
         audioEngine.stop()
         audioFile = nil
-//        audioRecorder?.stop()
-//        audioRecorder = nil
-//        print("Recording stopped.")
-    }
-
-    private func getDocumentsDirectory() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
+        //        audioRecorder?.stop()
+        //        audioRecorder = nil
+        //        print("Recording stopped.")
     }
 }
 
